@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Business Economics — Study Planner (Dark)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#071224;
+    --card:#0b1622;
+    --muted:#94a3b8;
+    --text:#e6eef8;
+    --accent1:#7c3aed; /* purple */
+    --accent2:#06b6d4; /* teal */
+    --accent3:#f59e0b; /* amber */
+    --glass: rgba(255,255,255,0.03);
+    --radius:14px;
+    --maxw:1100px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent),
+                radial-gradient(900px 500px at 90% 90%, rgba(6,182,212,0.06), transparent),
+                var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:28px;
+  }
+
+  .container{
+    max-width:var(--maxw);
+    margin:0 auto;
+  }
+
+  header{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .brand{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .logo{
+    width:56px;height:56px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    display:grid;place-items:center;font-weight:800;color:white;
+    box-shadow:0 8px 30px rgba(12,15,30,0.6);
+  }
+  h1{font-size:20px;margin:0}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .btn{
+    background:linear-gradient(90deg,var(--accent2),var(--accent1));
+    border:0;color:white;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;
+    box-shadow:0 8px 20px rgba(12,15,30,0.5);
+  }
+  .btn.ghost{
+    background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);
+    box-shadow:none;
+  }
+  .meta{
+    margin:12px 0 22px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:var(--radius);
+    padding:16px;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  }
+
+  .top-row{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+
+  .countdown{
+    display:flex;
+    gap:12px;
+    align-items:center;font-weight:600;
+    color:var(--accent2);
+  }
+  .overall-progress{
+    height:12px;
+    background:rgba(255,255,255,0.04);
+    border-radius:10px;
+    overflow:hidden;
+    width:100%;
+  }
+  .overall-progress > div{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    transition:width .4s ease;
+  }
+
+  /* Topics list */
+  .topics{
+    margin-top:18px;
+    display:grid;
+    gap:12px;
+  }
+
+  .topic{
+    background:transparent;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.04);
+  }
+  .topic-head{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 16px;
+    cursor:pointer;
+  }
+  .topic-title{
+    display:flex;
+    gap:12px;align-items:center;
+  }
+  .topic-badge{
+    min-width:40px;height:40px;border-radius:10px;
+    display:grid;place-items:center;font-weight:700;color:white;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  }
+  .topic-info{min-width:0}
+  .topic-info h3{margin:0;font-size:15px}
+  .topic-info p{margin:2px 0 0;color:var(--muted);font-size:12px}
+  .topic-actions{display:flex;gap:8px;align-items:center}
+
+  .progress-small{
+    height:8px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;width:200px;
+  }
+  .progress-small > div{height:100%;width:0;background:linear-gradient(90deg,var(--accent1),var(--accent3));transition:width .3s ease}
+
+  .chev{color:var(--muted);transition:transform .25s ease}
+
+  .topic-body{
+    padding:12px 16px 18px;
+    border-top:1px solid rgba(255,255,255,0.02);
+    display:none;
+    gap:10px;
+  }
+
+  .subtasks{display:grid;gap:8px}
+  .subtask{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    background:var(--card);
+    padding:10px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .subtask label{display:flex;gap:10px;align-items:center;cursor:pointer;width:100%}
+  .subtask p{margin:0;color:var(--text);font-size:14px}
+  .subtask small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+
+  input[type="checkbox"]{
+    width:18px;height:18px;border-radius:4px;cursor:pointer;accent-color:var(--accent1);
+  }
+
+  .topic-footer{
+    display:flex;
+    gap:10px;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:12px;
+  }
+
+  .muted{color:var(--muted);font-size:13px}
+
+  /* responsive */
+  @media (max-width:880px){
+    .top-row{flex-direction:column;align-items:stretch;gap:10px}
+    .progress-small{width:140px}
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">BE</div>
+        <div>
+          <h1>Business Economics — Study Planner</h1>
+          <p class="lead">Exam: <strong>20 Nov 2025</strong> · Dark theme · Progress saved locally</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="markAll" class="btn ghost">Mark All Done</button>
+        <button id="resetBtn" class="btn">Reset Progress</button>
+      </div>
+    </header>
+
+    <div class="meta card">
+      <div class="top-row">
+        <div style="min-width:240px">
+          <div class="muted">Exam Countdown</div>
+          <div style="display:flex;gap:12px;align-items:baseline;margin-top:6px">
+            <div class="countdown">
+              <span id="cd-days" style="font-size:20px">--</span>
+              <span class="muted" style="font-size:13px">days</span>
+            </div>
+            <div class="countdown">
+              <span id="cd-hours" style="font-size:20px">--</span>
+              <span class="muted" style="font-size:13px">hrs</span>
+            </div>
+            <div class="countdown">
+              <span id="cd-mins" style="font-size:20px">--</span>
+              <span class="muted" style="font-size:13px">mins</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1">
+          <div class="muted">Overall Progress</div>
+          <div style="display:flex;gap:12px;align-items:center;margin-top:8px">
+            <div class="overall-progress" aria-hidden>
+              <div id="overallBar" style="width:0%"></div>
+            </div>
+            <div id="overallPercent" style="min-width:42px;text-align:right;font-weight:700">0%</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;color:var(--muted);font-size:13px">
+        Note: Mon–Wed are university days (limited study time). Use collapse arrows to open topics. Your progress is saved in this browser.
+      </div>
+    </div>
+
+    <section class="topics" id="topicsRoot">
+      <!-- topics will be rendered here -->
+    </section>
+
+    <div style="height:28px"></div>
+  </div>
+
+<script>
+/* ----------------- DATA: topics and subtopics ----------------- */
+const topics = [
+  {
+    id:1,
+    title:"Nature and Scope of Economics",
+    note:"Definition; Micro vs Macro; Opportunity cost; Schools; PPF",
+    subs:[
+      "Definition of Economics",
+      "Allocation of scarce resources and wants",
+      "Micro VS Macro",
+      "Terminology: land, labour, capital and enterprise",
+      "Basic economic school of thoughts (Classical, new classical, modern)",
+      "Major economic systems (capitalism, socialism, Islamic)",
+      "Concept of Opportunity Cost and Production Possibility Curve"
+    ]
+  },
+  {
+    id:2,
+    title:"Consumer's Behavior and Its Analysis",
+    note:"Utility, Indifference curves, effects, consumer surplus",
+    subs:[
+      "Utility and its kinds",
+      "Law of Diminishing Marginal Utility",
+      "Consumer's equilibrium through Indifference Curves techniques",
+      "Income Effect, Price Effect and Substitution Effect",
+      "Consumer's surplus"
+    ]
+  },
+  {
+    id:3,
+    title:"Demand & Supply Analysis",
+    note:"Demand & supply curves, equilibrium (short & long run)",
+    subs:[
+      "Definition of Market",
+      "Concept and law of Demand Curve",
+      "Concept and law of Supply Curve",
+      "Formation of Equilibrium price",
+      "Short Run and Long Run Equilibrium Price"
+    ]
+  },
+  {
+    id:4,
+    title:"Price Elasticity",
+    note:"Elasticity calculations and influences",
+    subs:[
+      "Calculation of Price Elasticity of Demand",
+      "Impact of Price Elasticity of Demand",
+      "Influences on Price Elasticity of Demand",
+      "Calculation of Price Elasticity of Supply",
+      "Influences on Price Elasticity of Supply"
+    ]
+  },
+  {
+    id:5,
+    title:"Price Instability and Government Measures",
+    note:"Price instability reasons & price stabilization policies",
+    subs:[
+      "Reasons for Price Instability in Markets for Primary Goods",
+      "Implications of Price Instability for Producer Incomes and Supply",
+      "Price Stabilization Policies",
+      "Minimum and Maximum Pricing Policies in Goods Markets",
+      "Minimum and Maximum Pricing Policies in Factor Markets"
+    ]
+  },
+  {
+    id:6,
+    title:"Cost Behavior",
+    note:"Types of cost; SR & LR behaviour; isoquant",
+    subs:[
+      "Types of Cost (fixed, variable, total, marginal)",
+      "Short Run Cost Behaviour",
+      "Long Run Cost Behaviour",
+      "Impact of Long Run Costs on Industry Structure",
+      "Iso-cost and Isoquant concepts"
+    ]
+  },
+  {
+    id:7,
+    title:"Competition, Market Effects & Government Measures",
+    note:"Market competition, monopoly, externalities, policy",
+    subs:[
+      "Methods of Business Integration",
+      "Measures of Market Competition and Concentration",
+      "Effects of Monopoly and Collusive Practices",
+      "Competition Policy",
+      "Nature of Externalities",
+      "Government Measures to deal with Externalities",
+      "Elements of Public Finance (brief)",
+      "Government Macroeconomic Policy Goals"
+    ]
+  },
+  {
+    id:8,
+    title:"Macroeconomic: Trade Cycle",
+    note:"National income; circular flow; multiplier; trade cycle",
+    subs:[
+      "Factors affecting National Income",
+      "Circular Flow of Income",
+      "Stages in the Trade Cycle",
+      "Impact of the Trade Cycle on Business Environment",
+      "Multiplier effect"
+    ]
+  },
+  {
+    id:9,
+    title:"Macroeconomic: Role of Government",
+    note:"Fiscal/monetary policy, unemployment, inflation, supply-side",
+    subs:[
+      "Government Macroeconomic Policy Goals",
+      "Elements of Public Finance",
+      "Unemployment (types & causes)",
+      "Inflation (causes & effects)",
+      "Fiscal Policy (tools & objectives)",
+      "Monetary Policy (SBP tools)",
+      "Supply side Policies"
+    ]
+  },
+  {
+    id:10,
+    title:"Economy of Pakistan",
+    note:"Inflation, SBP, fiscal & monetary trends, BOP",
+    subs:[
+      "Discuss inflation in Pakistan and its causes",
+      "Key features of Pakistan's current fiscal policy",
+      "Key features of Pakistan's current monetary policy",
+      "Function and role of State Bank of Pakistan",
+      "Interest rate determination and its trends in Pakistan",
+      "Balance of payment and trade and their trends in Pakistan"
+    ]
+  }
+];
+
+/* ----------------- RENDERING ----------------- */
+const root = document.getElementById('topicsRoot');
+
+function loadState(topicIndex, subIndex){
+  return localStorage.getItem(`be_${topicIndex}_${subIndex}`) === '1';
+}
+function saveState(topicIndex, subIndex, val){
+  localStorage.setItem(`be_${topicIndex}_${subIndex}`, val ? '1' : '0');
+}
+
+function topicKeyAll(topicIndex){
+  return `be_topic_all_${topicIndex}`;
+}
+
+function render(){
+  root.innerHTML = '';
+  topics.forEach((t, ti) => {
+    const topicEl = document.createElement('article');
+    topicEl.className = 'topic card';
+    topicEl.innerHTML = `
+      <div class="topic-head" data-ti="${ti}">
+        <div class="topic-title">
+          <div class="topic-badge">${t.id}</div>
+          <div class="topic-info">
+            <h3>${t.title}</h3>
+            <p>${t.note}</p>
+          </div>
+        </div>
+        <div class="topic-actions">
+          <div class="progress-small" title="Topic progress"><div style="width:0%" id="tpbar-${ti}"></div></div>
+          <div class="muted" id="tpcount-${ti}">0 / ${t.subs.length}</div>
+          <div style="width:8px"></div>
+          <div class="chev" data-ti="${ti}">▾</div>
+        </div>
+      </div>
+      <div class="topic-body" id="tbody-${ti}">
+        <div class="subtasks" id="subs-${ti}"></div>
+        <div class="topic-footer">
+          <div class="muted" id="last-ch-${ti}"> </div>
+          <div>
+            <button class="btn ghost" data-action="markAll" data-ti="${ti}">Mark Topic Done</button>
+            <button class="btn ghost" data-action="markNone" data-ti="${ti}">Unmark Topic</button>
+          </div>
+        </div>
+      </div>
+    `;
+    root.appendChild(topicEl);
+
+    // render subtasks
+    const subsRoot = topicEl.querySelector(`#subs-${ti}`);
+    t.subs.forEach((s, si) => {
+      const subWrap = document.createElement('div');
+      subWrap.className = 'subtask';
+      const checked = loadState(ti, si);
+      subWrap.innerHTML = `
+        <label>
+          <input type="checkbox" data-ti="${ti}" data-si="${si}" ${checked ? 'checked' : ''}>
+          <div style="min-width:0">
+            <p>${s}</p>
+          </div>
+        </label>
+      `;
+      subsRoot.appendChild(subWrap);
+    });
+
+    // attach events for toggling head
+    const head = topicEl.querySelector('.topic-head');
+    const body = topicEl.querySelector('.topic-body');
+    const chev = topicEl.querySelector('.chev');
+    head.addEventListener('click', (e)=>{
+      // allow clicks on control buttons to not collapse
+      if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+      const open = body.style.display === 'block';
+      if(open){
+        body.style.display = 'none';
+        chev.style.transform = '';
+      } else {
+        body.style.display = 'block';
+        chev.style.transform = 'rotate(180deg)';
+      }
+    });
+
+    // subtask change listeners
+    const checkboxes = topicEl.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(chk => {
+      chk.addEventListener('change', (ev)=>{
+        const ti = +chk.dataset.ti;
+        const si = +chk.dataset.si;
+        saveState(ti, si, chk.checked);
+        updateTopicProgress(ti);
+        updateOverall();
+        // update last changed
+        document.getElementById(`last-ch-${ti}`).textContent = chk.checked ? 'Last action: checked' : 'Last action: unchecked';
+      });
+    });
+
+    // topic level buttons
+    topicEl.querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        const act = btn.dataset.action;
+        const tindex = +btn.dataset.ti;
+        if(act === 'markAll'){
+          topics[tindex].subs.forEach((_,si)=>{ saveState(tindex,si, true) });
+        } else {
+          topics[tindex].subs.forEach((_,si)=>{ saveState(tindex,si, false) });
+        }
+        render(); // re-render
+        updateOverall();
+      });
+    });
+
+    // update progress after building
+    updateTopicProgress(ti);
+  });
+}
+
+/* ----------------- PROGRESS CALC ----------------- */
+function updateTopicProgress(topicIndex){
+  const t = topics[topicIndex];
+  const total = t.subs.length;
+  let done = 0;
+  for(let i=0;i<total;i++){
+    if(loadState(topicIndex,i)) done++;
+  }
+  const pct = total ? Math.round((done/total)*100) : 0;
+  const bar = document.getElementById(`tpbar-${topicIndex}`);
+  const count = document.getElementById(`tpcount-${topicIndex}`);
+  if(bar) bar.style.width = pct + '%';
+  if(count) count.textContent = `${done} / ${total}`;
+}
+
+function updateOverall(){
+  let totalSubs=0, doneSubs=0;
+  topics.forEach((t, ti)=>{
+    totalSubs += t.subs.length;
+    t.subs.forEach((_,si)=>{
+      if(loadState(ti,si)) doneSubs++;
+    });
+  });
+  const pct = totalSubs ? Math.round((doneSubs/totalSubs)*100) : 0;
+  document.getElementById('overallBar').style.width = pct + '%';
+  document.getElementById('overallPercent').textContent = pct + '%';
+}
+
+/* ----------------- Countdown ----------------- */
+const examDate = new Date('2025-11-20T09:00:00'); // you said 20 Nov 2025
+function tickCountdown(){
+  const now = new Date();
+  const diff = Math.max(0, examDate - now);
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+  document.getElementById('cd-days').textContent = String(days);
+  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+}
+setInterval(tickCountdown, 1000*30);
+tickCountdown();
+
+/* ----------------- Controls ----------------- */
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm('Reset all progress? This will clear saved checkboxes.')){
+    // clear all keys matching be_*
+    Object.keys(localStorage).forEach(k=>{
+      if(k.startsWith('be_')) localStorage.removeItem(k);
+    });
+    render(); updateOverall();
+  }
+});
+
+document.getElementById('markAll').addEventListener('click', ()=>{
+  // toggle between mark all done and restore
+  const allDone = (() => {
+    for(let ti=0;ti<topics.length;ti++){
+      for(let si=0;si<topics[ti].subs.length;si++){
+        if(!loadState(ti,si)) return false;
+      }
+    }
+    return true;
+  })();
+  topics.forEach((t,ti)=>{
+    t.subs.forEach((_,si)=> saveState(ti,si, !allDone));
+  });
+  render(); updateOverall();
+});
+
+/* initialize */
+render();
+updateOverall();
+
+</script>
+</body>
+</html>
